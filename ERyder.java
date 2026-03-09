@@ -1,115 +1,112 @@
 // Core class for eRyder e-bike sharing service
 public class ERyder {
-    // Required instance variables
-    private String bikeID;       // Unique ID for each bike
-    private int batteryLevel;    // Battery level (0-100%)
-    private boolean isAvailable; // Availability status (true = available)
-    private double kmDriven;     // Total distance traveled (kilometers)
+    // Instance variables containing bike attributes
+    private String bikeID;          // A distinctive alphanumeric code assigned to every e-bike
+    private int batteryLevel;       //Current battery charge level (ranging from 0% to 100%)
+    private boolean isAvailable;    // Current operational readiness level
+    private double kmDriven;        // Cumulative walking distance (kilometers)
 
-    // Default constructor (no parameters)
+    
     public ERyder() {
-        // Default values for testing
         this.bikeID = "DEFAULT-000";
-        this.batteryLevel = 100;  // Full battery by default
-        this.isAvailable = true;  // Available by default
-        this.kmDriven = 0.0;      // 0 km driven initially
+        this.batteryLevel = 0;
+        this.isAvailable = false;
+        this.kmDriven = 0.0;
     }
 
-    // Parameterized constructor (initializes all variables)
+    // Parameterized constructor: Full initialization of all bike properties
     public ERyder(String bikeID, int batteryLevel, boolean isAvailable, double kmDriven) {
         this.bikeID = bikeID;
-        // Use validated setter for battery level
-        this.setBatteryLevel(batteryLevel);
+        setBatteryLevel(batteryLevel); // Use the verified battery integrity setter
         this.isAvailable = isAvailable;
         this.kmDriven = kmDriven;
     }
 
-    // ride() method: Check battery and availability
+    // Core operational method: Validates ride eligibility
     public void ride() {
-        // Bike is usable only if battery > 0 AND available
-        if (this.batteryLevel > 0 && this.isAvailable) {
-            System.out.println("Ride successful! The bike is available.");
+        // Dual validation: Sufficient battery (≥10% threshold) and availability
+        if (this.batteryLevel >= 10 && this.isAvailable) {
+            System.out.printf("E-bike %s is ready for use – battery at %d%% and fully operational.%n", 
+                              this.bikeID, this.batteryLevel);
         } else {
-            System.out.println("Ride failed! The bike is not available (low battery or already in use).");
+            String reason = (this.batteryLevel < 10) ? 
+                            String.format("insufficient battery (%d%%)", this.batteryLevel) : 
+                            "marked as unavailable";
+            System.out.printf("E-bike %s cannot be ridden: %s.%n", this.bikeID, reason);
         }
     }
 
-    // printBikeDetails() method: Print all bike information
+    // Comprehensive details printer with formatted output
     public void printBikeDetails() {
-        System.out.println("===== Bike Details =====");
-        System.out.println("Bike ID: " + this.bikeID);
-        System.out.println("Battery Level: " + this.batteryLevel + "%");
-        System.out.println("Availability: " + (this.isAvailable ? "Available" : "Unavailable"));
-        System.out.println("Total KM Driven: " + this.kmDriven + " km");
-        System.out.println("========================");
+        System.out.println("\n=== eRyder E-Bike Detailed Profile ===");
+        System.out.println("Unique Bike Identifier: " + this.bikeID);
+        System.out.println("Battery Remaining: " + this.batteryLevel + "%");
+        System.out.println("Availability Status: " + (this.isAvailable ? "Available for rental" : "Unavailable (in maintenance/charging)"));
+        System.out.printf("Total Distance Covered: %.2f kilometers%n", this.kmDriven);
+        System.out.println("========================================");
     }
 
-    // Getters and Setters (with validation for batteryLevel)
-    // Getter for bikeID
+    // Getter method (in line with the principle of encapsulation)
     public String getBikeID() {
         return bikeID;
     }
 
-    // Setter for bikeID
-    public void setBikeID(String bikeID) {
-        this.bikeID = bikeID;
-    }
-
-    // Getter for batteryLevel
     public int getBatteryLevel() {
         return batteryLevel;
     }
 
-    // Setter for batteryLevel (validates 0-100 range)
-    public void setBatteryLevel(int batteryLevel) {
-        if (batteryLevel >= 0 && batteryLevel <= 100) {
-            this.batteryLevel = batteryLevel;
-        } else {
-            // Default to 0% if invalid value is provided
-            System.out.println("Error: Battery level must be between 0 and 100! Set to 0% by default.");
-            this.batteryLevel = 0;
-        }
-    }
-
-    // Getter for isAvailable
     public boolean isAvailable() {
         return isAvailable;
     }
 
-    // Setter for isAvailable
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
-
-    // Getter for kmDriven
     public double getKmDriven() {
         return kmDriven;
     }
 
-    // Setter for kmDriven
-    public void setKmDriven(double kmDriven) {
-        this.kmDriven = kmDriven;
+    // Method for setting up with the function of executing business rules
+    public void setBikeID(String bikeID) {
+        this.bikeID = bikeID;
     }
-     public static void main(String[] args) {
-        // 1. Create object with default constructor and print details
-        System.out.println("=== Testing Bike with Default Constructor ===");
-        ERyder bike1 = new ERyder();
-        bike1.printBikeDetails();
 
-        // 2. Create object with parameterized constructor
-        // Call ride() and printBikeDetails()
-        System.out.println("\n=== Testing Bike with Parameterized Constructor ===");
-        ERyder bike2 = new ERyder("EB-001", 80, true, 15.5);
-        bike2.ride();
-        bike2.printBikeDetails();
+    // Battery power setting device with strict range verification (0 - 100) function
+    public void setBatteryLevel(int batteryLevel) {
+        if (batteryLevel >= 0 && batteryLevel <= 100) {
+            this.batteryLevel = batteryLevel;
+        } else {
+            System.err.printf("Invalid battery level (%d%%) – must be between 0 and 100. Retaining current level (%d%%).%n", 
+                              batteryLevel, this.batteryLevel);
+        }
+    }
 
-        // Optional: Test battery level validation
-        System.out.println("\n=== Testing Battery Level Validation ===");
-        bike2.setBatteryLevel(120); // Invalid value (120%)
-        System.out.println("Battery level after validation: " + bike2.getBatteryLevel() + "%");
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    public void setKmDriven(double kmDriven) {
+       // Prevent the occurrence of negative distance values (in terms of data integrity)
+        this.kmDriven = (kmDriven >= 0) ? kmDriven : this.kmDriven;
     }
 }
-// Main class to test the ERyder e-bike service
 
-   
+// The main execution class used for demonstrating the eRyder service
+class ERyderMain {
+    public static void main(String[] args) {
+        // Scenario 1: Default constructor initialization + Detailed information printing
+        ERyder defaultBike = new ERyder();
+        System.out.println("=== Demonstration 1: Default Bike Initialization ===");
+        defaultBike.printBikeDetails();
 
+        // Scenario 2: Parameterized constructor + ride check + details print
+        ERyder premiumBike = new ERyder("ER-789X", 85, true, 127.45);
+        System.out.println("\n=== Demonstration 2: Custom Bike Initialization ===");
+        premiumBike.ride(); // Validate ride eligibility
+        premiumBike.printBikeDetails();
+
+        // Additional edge case demonstration (invalid battery set)
+        System.out.println("\n=== Demonstration 3: Invalid Battery Level Test ===");
+        premiumBike.setBatteryLevel(110); 
+        premiumBike.setBatteryLevel(-5);
+        premiumBike.setBatteryLevel(75);
+        premiumBike.printBikeDetails();
+    }
+}
