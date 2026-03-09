@@ -23,19 +23,39 @@ public class ERyder {
     }
 
     // Core operational method: Validates ride eligibility
-    public void ride() {
-        // Dual validation: Sufficient battery (≥10% threshold) and availability
-        if (this.batteryLevel >= 10 && this.isAvailable) {
-            System.out.printf("E-bike %s is ready for use – battery at %d%% and fully operational.%n", 
-                              this.bikeID, this.batteryLevel);
-        } else {
-            String reason = (this.batteryLevel < 10) ? 
-                            String.format("insufficient battery (%d%%)", this.batteryLevel) : 
-                            "marked as unavailable";
-            System.out.printf("E-bike %s cannot be ridden: %s.%n", this.bikeID, reason);
-        }
+public void ride() {
+    // Determine the state using a combination of conditions
+    int state;
+    if (batteryLevel >= 10 && isAvailable) {
+        state = 0; // Ready state
+    } else if (batteryLevel < 10) {
+        state = 1; // Low battery state
+    } else {
+        state = 2; // Unavailable state
     }
-
+    
+    // Switch based on the determined state
+    switch (state) {
+        case 0:
+            System.out.printf("E-bike %s is ready for use – battery at %d%% and fully operational.%n", 
+                              bikeID, batteryLevel);
+            break;
+            
+        case 1:
+            System.out.printf("E-bike %s cannot be ridden: insufficient battery (%d%%).%n", 
+                              bikeID, batteryLevel);
+            break;
+            
+        case 2:
+            System.out.printf("E-bike %s cannot be ridden: marked as unavailable.%n", bikeID);
+            break;
+            
+        default:
+            // This should never happen
+            System.out.printf("E-bike %s is in an unknown state.%n", bikeID);
+            break;
+    }
+}
     // Comprehensive details printer with formatted output
     public void printBikeDetails() {
         System.out.println("\n=== eRyder E-Bike Detailed Profile ===");
