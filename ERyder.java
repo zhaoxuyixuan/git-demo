@@ -22,7 +22,7 @@ public class ERyder {
         this.kmDriven = kmDriven;
     }
 
-    // Core operational method: Validates ride eligibility
+   // Core operational method: Validates ride eligibility
 public void ride() {
     // Determine the state using a combination of conditions
     int state;
